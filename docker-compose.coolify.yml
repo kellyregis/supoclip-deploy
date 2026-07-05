@@ -203,12 +203,15 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: supoclip-postgres
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_DB: supoclip
       POSTGRES_USER: supoclip
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supoclip_password}
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - postgres_data_v2:/var/lib/postgresql/data
+      - postgres_data_v3:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
     healthcheck:
@@ -225,7 +228,7 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  postgres_data_v2:
+  postgres_data_v3:
     driver: local
 
 networks:

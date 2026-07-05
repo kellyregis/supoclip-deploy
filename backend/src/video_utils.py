@@ -208,14 +208,16 @@ def get_video_transcript(video_path: Path, speech_model: str = "universal") -> s
     aai.settings.http_timeout = runtime_config.assembly_ai_http_timeout_seconds
     transcriber = aai.Transcriber()
 
-    # Request word-level timestamps for precise subtitle sync
-    speech_model_value = _assemblyai_speech_model_value(speech_model)
+    # Request word-level timestamps for precise subtitle sync.
+    # NOTE: AssemblyAI deprecated the `speech_model` request parameter (the old
+    # "universal" value is now rejected). Omit it so the API uses its current
+    # default model; word-level timestamps are returned regardless.
+    _ = _assemblyai_speech_model_value(speech_model)  # kept for signature/back-compat
 
     config_obj = aai.TranscriptionConfig(
         speaker_labels=True,
         punctuate=True,
         format_text=True,
-        speech_model=speech_model_value,
     )
 
     try:
